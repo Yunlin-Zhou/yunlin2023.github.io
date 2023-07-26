@@ -1,0 +1,57 @@
+---
+title: "Welcome to my website!"
+output:
+  html_document:
+    theme: paper
+---
+
+:::: {style="display: flex;"}
+
+::: {}
+
+<br>
+
+<img src="./photo.jpg" style="width:85%">
+
+<font size="2">
+
+**Yunlin Zhou**
+
+**MS student in Biostatistics**
+
+**Columbia University**
+
+</font>
+
+:::
+
+::: {}
+
+
+<br>
+
+<font size="6">
+
+About
+
+</font>
+
+<font size="3">
+
+Hello! This is Yunlin Zhou. I am a new graduated MS student in Biostatistics (*Theory & Method track*) from the Mailman School of Public Health at Columbia University.
+
+In the past semesters, I took data analysis courses including R, SAS and Python programming, as well as software skills in Access and MySQL. I also took advanced statistical methods courses like longitudinal data and causal inference. Recently I am working with Prof. Kara Rudolph on a project, of which the idea is to estimate the longitudinal association between disability denial rates and overdose death rates and the extent to which these longitudinal associations differ by cost of living.
+
+In addition to my data analysis and technical skills, I also have extensive experience working with research teams. Throughout my prior undergraduate work at the Beijing Forestry University, I worked as a research assistant for almost 4 years. In this role, I took part in 3 programs and published an article and a review as the second author.
+
+From this website, you can see my previous courses, projects and publications.
+
+You can find my [Resume](./CV-Yunlin Zhou.pdf) here, or you can click on the icon on the top to download it. 
+
+If you want to send me an e-mail, please click on the icon on the top. Also, you can see all my code in my  [github](https://github.com/Yunlin-Zhou).
+
+</font>
+
+:::
+
+::::

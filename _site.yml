@@ -1,0 +1,37 @@
+name: "Yunlin Zhou 2023"
+output_dir: "."
+navbar:
+  title: "Yunlin Zhou"
+  right:
+    - text: "Publications"
+      menu:
+      - text: "Effects of Chilling on the Structure, Function and Development of Chloroplasts"
+        href: effects.html
+      - text: "The Putative Smallest Introns in the Arabidopsis Genome"
+        href: intron.html
+      - text: "Thesis: Impact of Amazon Fulfillment Centers on PM2.5 Levels in Surrounding Areas"
+        href: Impact-of-Amazon-Fulfillment-Centers-on-PM2.5-Levels-in-Surrounding-Areas.html
+    - text: "Courses"
+      menu:
+      - text: "R coding courses"
+        href: R-coding-courses.html
+      - text: "Other coding courses"
+        href: Other-coding-courses.html
+      - text: "Advanced math courses"
+        href: advanced-math-courses.html
+      - text: "Advanced statistics courses"
+        href: Advanced-statistics-courses.html
+      - text: "Biostatistical methods courses"
+        href: Biostatistical-Methods.html
+      - text: "Deep learning in biomedical engineering"
+        href: Deep-Learning-in-Biomedical-Imaging.html
+    - text: "CV"
+      href: CV-Yunlin Zhou.pdf
+    - text: "简历"
+      href: 周韵琳简历.pdf
+    - text: "Email"
+      href: mailto:yz4184@cumc.columbi.edu
+    - text: "邮箱"
+      href: mailto:yunlin-zhou@outlook.com
+    - icon: fa-github fa-lg
+      href: https://github.com/Yunlin-Zhou
