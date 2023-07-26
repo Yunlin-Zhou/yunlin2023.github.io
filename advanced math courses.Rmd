@@ -1,0 +1,40 @@
+---
+title: "Advanced Math courses"
+output:
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+    theme: paper
+---
+
+<br>
+
+# Probability
+
+*This course is being offered in the Fall of 2021 through the Biostatistics Department at the Columbia School of Public Health; the syllabus is available [here](./advanced math courses/PH_P8104_Syllabus-2021.pdf).*
+
+<br>
+
+## Course description
+
+<font size="3">
+
+This course covers the basic concepts and principles of probability theory that are essential to statistics and biostatistics. Topics covered include: sample space, events, basic set theory, conditional probability, Bayes rule, discrete and continuous random variables, distribution functions, multivariate random variables and distributions, variable transformations, marginal and joint distributions, expectation and variance, moments, moment generating functions, law of large numbers, central limit theorems etc.
+
+</font>
+
+<br>
+
+# Statistical Inference
+
+*This course is being offered in the Spring of 2022 through the Biostatistics Department at the Columbia School of Public Health; the syllabus is available [here](./advanced math courses/P8109_Syllabus-1.pdf).*
+
+<br>
+
+## Course description
+
+<font size="3">
+
+The course aims to present the fundamental principles behind statistical inference. The course starts by presenting major topics in distribution theory. The subject of statistical estimation is then covered with the associated topics of likelihood, properties of estimators, Cramér-Rao inequality, sufficiency, and completeness. The subject of hypothesis testing is then covered, with associated topics like power, Neyman-Pearson lemma, uniformly most powerful tests, and unbiased tests.
+
+</font>

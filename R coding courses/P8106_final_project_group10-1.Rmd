@@ -1,0 +1,651 @@
+---
+title: "P8106 Final Project"
+author: "Yunlin Zhou; Jinghan Liu; Jiayao Sun"
+output:
+  pdf_document:
+    latex_engine: xelatex
+editor_options: 
+  chunk_output_type: console
+---
+```{r, echo = FALSE, message = FALSE, warning=FALSE}
+library(ggplot2)
+library(caret)
+library(glmnet)
+library(pROC)
+library(pdp)
+library(vip)
+library(AppliedPredictiveModeling)
+library(earth)
+library(tidyverse)
+library(patchwork)
+library(MASS)
+library(klaR)
+library(GGally)
+library(rpart)
+library(rpart.plot)
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      message = FALSE,
+                      warning = FALSE)
+```
+
+# Introdution
+
+## Motivation
+
+*Cardiovascular diseases* (CVDs) are the number 1 cause of death globally, taking an estimated 17.9 million lives each year, which accounts for 31% of all deaths worldwide. Through this [data set](https://www.kaggle.com/datasets/fedesoriano/heart-failure-prediction?select=heart.csv), we would like to explore how those features related to the heart disease, thus we can further use them to predict a possible heart disease.
+
+```{r, results='hide'}
+# import the data
+dat = read.csv("./heart.csv")%>%
+  janitor::clean_names()%>%
+  mutate(heart_disease = case_when(
+        heart_disease == 0 ~ "normal",
+        heart_disease == 1 ~"disease"),
+        fasting_bs = case_when(
+           fasting_bs == 0 ~ "other",
+        fasting_bs == 1 ~ "high"
+        ))%>%
+  relocate(heart_disease)%>%
+  relocate(sex, chest_pain_type, fasting_bs, resting_ecg,exercise_angina, st_slope, .after = last_col())
+dat$cholesterol[dat$cholestero== 0] = NA
+```
+
+## Data preparation and cleaning
+
+The variables in our data set are below: 
+
+1. Age: age of the patient [years]
+2. Sex: sex of the patient [M: Male, F: Female]
+3. ChestPainType: chest pain type [TA: Typical Angina, ATA: Atypical Angina, NAP: Non-Anginal Pain, ASY: Asymptomatic]
+4. RestingBP: resting blood pressure [mm Hg]
+5. Cholesterol: serum cholesterol [mm/dl]
+6. FastingBS: fasting blood sugar [high: if FastingBS > 120 mg/dl, other: otherwise]
+7. RestingECG: resting electrocardiogram results [Normal: Normal, ST: having ST-T wave abnormality (T wave inversions and/or ST elevation or depression of > 0.05 mV), LVH: showing probable or definite left ventricular hypertrophy by Estes' criteria]
+8. MaxHR: maximum heart rate achieved [Numeric value between 60 and 202]
+9. ExerciseAngina: exercise-induced angina [Y: Yes, N: No]
+10. Oldpeak: oldpeak = ST [Numeric value measured in depression]
+11. ST_Slope: the slope of the peak exercise ST segment [Up: upsloping, Flat: flat, Down: downsloping]
+12. HeartDisease: disease or normal
+\newpage
+
+```{r}
+# using skim() to show the summary statistics about variables
+dat %>%
+skimr::skim()%>%
+knitr::knit_print()
+```
+
+As the table shows above, the data set has 7 character variables, 5 numeric variables, with 918 observations. In the original data set, there was no null observations, but we found out that some data of Cholesterol was 0, which is not possible in real life. So we assume that those Cholesterol = 0 rows were actually null value when collecting the data. In that case, we use the mean value to replace the null observations. For the character variables, we use the function `factor()` to change the data type so that we could apply the data set to the models. For better using this data set to train the models, we split the data set into two parts: training data (70%) and test data (30%).
+
+```{r, results='hide'}
+# clean the data
+dat = dat %>%
+  mutate(
+    heart_disease = factor(heart_disease, levels = c("normal","disease" )),
+    sex = factor(sex, levels = c("F","M")),
+    chest_pain_type	 = factor(chest_pain_type, levels = c("TA", "ATA", "NAP", "ASY")),
+    resting_ecg = factor(resting_ecg, levels = c("Normal", "ST", "LVH")),
+    exercise_angina =factor(exercise_angina, levels = c("Y","N")),
+    st_slope = factor(st_slope, levels = c("Down","Flat","Up")),
+    fasting_bs = factor(fasting_bs, levels = c("other","high"))
+  )
+dat$cholesterol[is.na(dat$cholesterol)] <- mean(dat$cholesterol, na.rm = TRUE)
+```
+
+```{r, results='hide'}
+# divide data into two parts (training and test)
+set.seed(1)
+rowTrain <- createDataPartition(y = dat$heart_disease,
+                                p = 0.7,
+                                list = FALSE)
+train_df = dat[rowTrain,]
+test_df = dat[-rowTrain,]
+```
+
+
+# Exploratory analysis/visualization
+
+```{r warnings = FALSE, fig.height = 4}
+theme1 <- transparentTheme(trans = .4)
+trellis.par.set(theme1)
+
+featurePlot(x = dat[, 2:6], 
+            y = dat$heart_disease,
+            scales = list(x = list(relation = "free"), 
+                          y = list(relation = "free")),
+            plot = "density", pch = "|", 
+            auto.key = list(columns = 2))
+```
+
+From the density plot of continuous variables above, we can see that most features have significant differences between the normal and heart-diseased people. The normal people are tending to have higher maximum heart rate; younger people are less likely to have heart disease; normal people have larger chances to have 0 oldpeak; the diseased people's cholesterol are more concentrated  between 200 - 300. But for the feature resting_bp, the difference is not significant.
+
+```{r warnings = FALSE, fig.width = 9, fig.height = 4}
+p_sex = dat%>%
+  ggplot(aes(x = dat[,7], fill = heart_disease)) + 
+  geom_bar(stat = "count", 
+           position = position_dodge(),
+           alpha = 0.6)+ 
+  labs(
+    x = "Sex"
+  )
+
+p_chest = dat%>%
+  ggplot(aes(x = dat[,8], fill = heart_disease)) + 
+  geom_bar(stat = "count", 
+           position = position_dodge(),
+           alpha = 0.6)+ 
+  labs(
+    x = "Chest Pain Type"
+  )
+
+p_bs = dat%>%
+  ggplot(aes(x = dat[,9], fill = heart_disease)) + 
+  geom_bar(stat = "count", 
+           position = position_dodge(),
+           alpha = 0.6)+ 
+  labs(
+    x = "Blood Sugar"
+  )
+
+p_ecg = dat%>%
+  ggplot(aes(x = dat[,10], fill = heart_disease)) + 
+  geom_bar(stat = "count", 
+           position = position_dodge(),
+           alpha = 0.6)+ 
+  labs(
+    x = "Resting ECG"
+  )
+
+p_angina = dat%>%
+  ggplot(aes(x = dat[,11], fill = heart_disease)) + 
+  geom_bar(stat = "count", 
+           position = position_dodge(),
+           alpha = 0.6)+ 
+  labs(
+    x = "Exercise Angina"
+  )
+
+p_slope = dat%>%
+  ggplot(aes(x = dat[,12], fill = heart_disease)) + 
+  geom_bar(stat = "count", 
+           position = position_dodge(),
+           alpha = 0.6)+ 
+  labs(
+    x = "ST_Slope"
+  )
+
+grid.arrange(p_sex, p_chest, p_ecg, p_bs, p_angina, p_slope, ncol = 3, top = "Graphical summaries of catagorical variables")
+```
+
+As we can see from the plot above: male are tending to have the heart disease; if the patients have Exercise Angina or flat ST slope, they are more likely to have heart disease. However, even if the patient has normal features like no chest pain, normal resting ECG and blood sugar, they could still have heart disease.
+
+# Models
+
+Since our outcome is either having hear disease or not, we would use classification models (including logistic regression, penalized logistic regression, GAM, MARS, LDA and QDA) with 10 fold validation to train the data set. We use all the variables in the data set to fit the model.
+
+```{r, results='hide'}
+# logistic regression
+ctrl <- trainControl(method = "repeatedcv",
+                     summaryFunction = twoClassSummary,
+                     classProbs = TRUE)
+set.seed(1)
+model.glm <- train(heart_disease ~ .,
+                  data = train_df,
+                   method = "glm",
+                   metric = "ROC",
+                   trControl = ctrl)
+
+model.glm$finalModel
+```
+
+As we can see from the Correlation plot below, we can conclude that age and max_hr, as well as age and oldpeak, are relatively highly correlated. 
+To fit logistic regression model, we need to make sure that the predictors are not correlated. Since age and oldpeak or max_hr are correlated, the result might be affected.
+
+```{r, fig.height = 1.5}
+p_correlation = dat %>%
+dplyr::select(-heart_disease) %>%
+ggcorr(label=TRUE, hjust = 0.9, layout.exp = 2, label_size = 3, label_round = 2)
+p_correlation
+```
+
+
+```{r, results='hide'}
+# Penalized logistic regression
+glmnGrid <- expand.grid(.alpha = seq(0, 1, length = 21),
+                        .lambda = exp(seq(-3, 2, length = 50)))
+set.seed(1)
+model.glmn <- train(heart_disease ~ .,
+                  data = train_df,
+                    method = "glmnet",
+                    tuneGrid = glmnGrid,
+                    metric = "ROC",
+                    trControl = ctrl)
+```
+
+For penalized logistic regression, the best tuning parameters are alpha = 0.1 and lambda = 0.06105877. The plot below shows that the highest point is the best tuning parameter selection.
+
+```{r, fig.height = 3}
+model.glmn$bestTune
+myCol<- rainbow(25)
+myPar <- list(superpose.symbol = list(col = myCol),
+              superpose.line = list(col = myCol))
+
+p_glmn = plot(model.glmn, par.settings = myPar, xTrans = function(x) log(x))
+p_glmn
+```
+
+```{r, results='hide'}
+# GAM
+set.seed(1)
+model.gam <- train(heart_disease ~ .,
+                  data = train_df,
+                   method = "gam",
+                   metric = "ROC",
+                   trControl = ctrl)
+
+model.gam$finalModel
+```
+
+For GAM model, we use GCV to select the degree of freedom. By looking at the formula in the final model, we can conclude that resting_bp is not an important predictor since its df is close to 0. The GAM model could automatically model non-linear relationships that standard linear regression will miss and potentially make more accurate predictions.
+
+```{r, results='hide'}
+# MARS
+set.seed(1)
+model.mars <- train(heart_disease ~ .,
+                  data = train_df,
+                    method = "earth",
+                    tuneGrid = expand.grid(degree = 1:4, 
+                                           nprune = 5:20),
+                    metric = "ROC",
+                    trControl = ctrl)
+
+```
+
+For MARS model, the best tuning parameters are nprune = 11 and degree = 1. The plot below shows that the highest point is the best tuning parameter selection.
+
+
+```{r, fig.height = 3}
+model.mars$bestTune
+p_mars = plot(model.mars)
+p_mars
+```
+
+```{r, results='hide'}
+# LDA
+set.seed(1)
+model.lda = train(heart_disease ~ .,
+                  data = train_df,
+                  method = "lda",
+                  metric = "ROC",
+                  trControl = ctrl)
+
+model.lda$finalModel
+```
+
+```{r, results='hide'}
+# QDA
+set.seed(1)
+model.qda <- train(heart_disease ~ .,
+                  data = train_df,
+                   method = "qda",
+                   metric = "ROC",
+                   trControl = ctrl)
+
+model.qda$finalModel
+```
+
+
+## SVM with Linear Kernel
+```{r}
+# SVM with Linear Kernel
+set.seed(1)
+svml.fit <- train(heart_disease ~ . , 
+                  data = train_df,
+                  method = "svmLinear",
+                  tuneGrid = data.frame(
+                    C = exp(seq(-7,2,len = 10))),
+                  metric = "ROC",
+                  trControl = ctrl)
+
+#svm linear cross-validation Plot
+plot(svml.fit, highlight = TRUE, xTrans = log) 
+#svm linear final model
+svml.fit$finalModel
+
+
+```
+
+
+## SVM with Radial Kernel
+```{r}
+# SVM with Radial Kernel
+svmr.grid <- expand.grid(C = exp(seq(-2,3,len = 10)),
+                         sigma = exp(seq(-8,-1,len = 20)))
+set.seed(1)
+svmr.fit <- train(heart_disease ~ . , 
+                  data = train_df,
+                  method = "svmRadialSigma",
+                  tuneGrid = svmr.grid,
+                  metric = "ROC",
+                  trControl = ctrl)
+
+#svm radial cross-validation plot
+myCol <- rainbow(20)
+myPar <- list(superpose.symbol = list(col = myCol),
+              superpose.line = list(col = myCol))
+plot(svmr.fit, highlight = TRUE, par.settings = myPar)
+
+#svm radial final model
+svmr.fit$finalModel
+```
+
+## Random Forest
+Under the random forest model, the Minimal Node Size with highest ROC curve with repeated cross-validation is 6. 
+
+```{r random forest}
+rf.grid <- expand.grid(mtry = 1:11,
+                       splitrule = "gini",
+                       min.node.size = seq(from = 2, to = 10, by = 2))
+set.seed(1)
+rf.fit <- train(heart_disease ~ . ,
+                dat,
+                subset = rowTrain,
+                method = "ranger",
+                tuneGrid = rf.grid,
+                metric = "ROC",
+                trControl = ctrl)
+
+ggplot(rf.fit, highlight = TRUE)
+
+#predict
+#AUC = 0.9461
+rf.pred <- predict(rf.fit, newdata = dat[-rowTrain,], type = "prob")[,1]
+rf.pred.class <- predict(rf.fit, newdata = dat[-rowTrain,], type = "raw")
+roc.rf <- roc(test_df$heart_disease, rf.pred)
+auc.rf <- c(roc.rf$auc[1])
+#Accuracy = 0.9018
+confusionMatrix(data = rf.pred.class,
+                reference = test_df$heart_disease)
+
+rf.pred1 = predict(rf.fit, newdata = dat[-rowTrain,])
+test.error = mean(rf.pred1 != test_df$heart_disease)
+test_error_rate = test.error*100
+test_error_rate
+
+```
+
+## boosting
+For the adaboost model, the number of boosting iterations is 2000 and the maximum depth is 3.
+```{r boosting}
+gbmA.grid <- expand.grid(n.trees = c(2000,3000,4000,5000),
+                         interaction.depth = 1:6,
+                         shrinkage = c(0.0005,0.001,0.002),
+                         n.minobsinnode = 1)
+set.seed(1)
+gbmA.fit <- train(heart_disease ~ . ,
+                  dat,
+                  subset = rowTrain,
+                  tuneGrid = gbmA.grid,
+                  trControl = ctrl,
+                  method = "gbm",
+                  distribution = "adaboost",
+                  metric = "ROC",
+                  verbose = FALSE)
+
+ggplot(gbmA.fit, highlight = TRUE)
+
+#predict
+gbmA.pred <- predict(gbmA.fit, newdata = dat[-rowTrain,], type = "prob")[,1]
+gbmA.pred.class <- predict(gbmA.fit, newdata = dat[-rowTrain,], type = "raw")
+roc.gbmA <- roc(test_df$heart_disease, gbmA.pred)
+auc.gbmA <- c(roc.gbmA$auc[1])
+
+confusionMatrix(data = gbmA.pred.class,
+                reference = test_df$heart_disease)
+
+```
+
+
+
+## Classification Trees
+
+```{r}
+ctrl_tree <- trainControl(method = "repeatedcv", 
+                          summaryFunction = twoClassSummary, 
+                          classProbs = TRUE)
+
+set.seed(1)
+
+rpart.fit <- train(heart_disease ~ . , 
+                  data = train_df, 
+               method = "rpart",
+tuneGrid = data.frame(cp = exp(seq(-8,-6, len = 50))),
+trControl = ctrl_tree,
+metric = "ROC")
+ggplot(rpart.fit, highlight = TRUE)
+
+rpart.fit$bestTune
+```
+
+###  Create a plot of the tree.
+
+```{r}
+rpart.plot(rpart.fit$finalModel)
+```
+
+
+
+## Find the best model
+
+To find the best fitting model, we need to compare the models with their AUC . As the plot shows below, the MARS model has the largest AUC, so we choose MARS model as the best fitting model.
+
+```{r, results='hide'}
+res <- resamples(list(GGLM = model.glm, 
+                      GLMNET = model.glmn, 
+                      GAM = model.gam,
+                      MARS = model.mars,
+                      LDA = model.lda,
+                      QDA = model.qda,
+                      SVM_Linear = svml.fit, 
+                      SVM_Radial = svmr.fit,
+                      Random_Forest = rf.fit,
+                      Boosting = gbmA.fit,
+                      Rpart = rpart.fit))
+
+ summary(res)
+
+```
+
+
+```{r, results='hide'}
+p_box = bwplot(res, metric = "ROC")
+p_box
+```
+
+```{r, results='hide'}
+ glm.pred <- predict(model.glm, newdata = test_df, type = "prob")[,2] 
+ glmn.pred <- predict(model.glmn, newdata = test_df, type = "prob")[,2] 
+ gam.pred <- predict(model.gam, newdata = test_df, type = "prob")[,2] 
+ mars.pred <- predict(model.mars, newdata = test_df, type = "prob")[,2] 
+ lda.pred <- predict(model.lda, newdata = test_df, type = "prob")[,2] 
+ qda.pred <- predict(model.qda, newdata = test_df, type = "prob")[,2] 
+ gbmA.pred <- predict(gbmA.fit, newdata = test_df, type = "prob")[,2] 
+ rf.pred <- predict(rf.fit, newdata = test_df, type = "prob")[,2] 
+ svml.pred <- predict(svml.fit, newdata = test_df, type = "prob")[,2] 
+ svmr.pred <- predict(svmr.fit, newdata = test_df, type = "prob")[,2] 
+ rpart.pred <- predict(rpart.fit, newdata = test_df, type = "prob")[,2] 
+
+roc.glm <- roc(test_df$heart_disease, glm.pred)
+roc.glmn <- roc(test_df$heart_disease, glmn.pred)
+roc.gam <- roc(test_df$heart_disease, gam.pred)
+roc.mars <- roc(test_df$heart_disease, mars.pred)
+roc.lda <- roc(test_df$heart_disease, lda.pred)
+roc.qda <- roc(test_df$heart_disease, qda.pred)
+roc.gbmA <- roc(test_df$heart_disease, gbmA.pred)
+roc.rf <- roc(test_df$heart_disease, rf.pred)
+roc.svml <- roc(test_df$heart_disease, svml.pred)
+roc.svmr <- roc(test_df$heart_disease, svmr.pred)
+roc.rpart <- roc(test_df$heart_disease, rpart.pred)
+
+
+
+auc <- c(roc.glm$auc[1], roc.glmn$auc[1], 
+         roc.gam$auc[1], roc.mars$auc[1],
+         roc.lda$auc[1], roc.qda$auc[1],
+         roc.gbmA$auc[1],roc.rf$auc[1],
+         roc.svml$auc[1],roc.svmr$auc[1],roc.rpart$auc[1])
+
+modelNames <- c("glm","glmn","gam","mars","lda", "qda","gmbA","rf","svml","svmr","rpart")
+
+
+```
+
+
+```{r, results='hide'}
+p_auc = ggroc(list(roc.glm, roc.glmn, roc.gam, roc.mars,roc.lda, roc.qda, roc.gbmA, roc.rf,roc.svml, roc.svmr, roc.rpart), legacy.axes = TRUE) + 
+  scale_color_discrete(labels = paste0(modelNames, " (", round(auc,4),")"),
+                       name = "Models (AUC)") +
+  geom_abline(intercept = 0, slope = 1, color = "grey")
+```
+
+```{r, fig.width = 10, fig.height = 4}
+grid.arrange(p_box, p_auc, ncol = 2)
+```
+
+## Feature Importance based on Random Forest model
+
+```{r,fig.height = 4}
+library(ranger)
+set.seed(1)
+#impurity
+rf2.final.imp <- ranger(heart_disease ~ . , dat[rowTrain,],
+                        mtry = rf.fit$bestTune[[1]],
+                        splitrule = "gini",
+                        min.node.size = rf.fit$bestTune[[3]],
+                        importance = "impurity")
+barplot(sort(ranger::importance(rf2.final.imp), decreasing = FALSE),
+        las = 2, horiz = TRUE, cex.names = 0.7,
+        col = colorRampPalette(colors = c("cyan","blue"))(8))
+#permutation
+rf2.final.perm <- ranger(heart_disease ~ . , dat[rowTrain,],
+                        mtry = rf.fit$bestTune[[1]],
+                        splitrule = "gini",
+                        min.node.size = rf.fit$bestTune[[3]],
+                        importance = "permutation")
+
+barplot(sort(ranger::importance(rf2.final.perm), decreasing = FALSE),
+        las = 2, horiz = TRUE, cex.names = 0.7,
+        col = colorRampPalette(colors = c("cyan","blue"))(8))
+```
+
+
+## PDP plot
+```{r}
+
+pdp.rf.oldpeak <- rf.fit %>%
+  pdp::partial(pred.var = "oldpeak",
+          grid.resolution = 100,
+          prob = TRUE) %>%
+  autoplot(rug = TRUE, train = dat[rowTrain,]) +
+  ggtitle("Random forest")
+pdp.rf.oldpeak
+
+```
+
+# ICE
+```{r ice, warning=FALSE}
+ice1.rf <- rf.fit %>%
+  pdp::partial(pred.var = "st_slope",
+          grid.resolution = 100,
+          prob = TRUE,
+          ice = TRUE) %>%
+  autoplot(train = train_df, alpha = .1,
+           center = TRUE)
+
+ice2.rf <- rf.fit %>%
+  pdp::partial(pred.var = "chest_pain_type",
+               grid.resolution = 100,
+               prob = TRUE,
+               ice = TRUE) %>%
+  autoplot(train = train_df, alpha = .1,
+           center = TRUE)
+
+ice3.rf <- rf.fit %>%
+  pdp::partial(pred.var = "exercise_angina",
+               grid.resolution = 100,
+               prob = TRUE,
+               ice = TRUE) %>%
+  autoplot(train = train_df, alpha = .1,
+           center = TRUE)
+
+ice4.rf <- rf.fit %>%
+  pdp::partial(pred.var = "oldpeak",
+               grid.resolution = 100,
+               prob = TRUE,
+               ice = TRUE) %>%
+  autoplot(train = train_df, alpha = .1,
+           center = TRUE)
+
+ice5.rf <- rf.fit %>%
+  pdp::partial(pred.var = "sex",
+               grid.resolution = 100,
+               prob = TRUE,
+               ice = TRUE) %>%
+  autoplot(train = train_df, alpha = .1,
+           center = TRUE)
+
+ice6.rf <- rf.fit %>%
+  pdp::partial(pred.var = "max_hr",
+               grid.resolution = 100,
+               prob = TRUE,
+               ice = TRUE) %>%
+  autoplot(train = train_df, alpha = .1,
+           center = TRUE)
+
+ice7.rf <- rf.fit %>%
+  pdp::partial(pred.var = "fasting_bs",
+               grid.resolution = 100,
+               prob = TRUE,
+               ice = TRUE) %>%
+  autoplot(train = train_df, alpha = .1,
+           center = TRUE)
+
+ice8.rf <- rf.fit %>%
+  pdp::partial(pred.var = "age",
+               grid.resolution = 100,
+               prob = TRUE,
+               ice = TRUE) %>%
+  autoplot(train = train_df, alpha = .1,
+           center = TRUE)
+
+ice9.rf <- rf.fit %>%
+  pdp::partial(pred.var = "cholesterol",
+               grid.resolution = 100,
+               prob = TRUE,
+               ice = TRUE) %>%
+  autoplot(train = train_df, alpha = .1,
+           center = TRUE)
+
+ice10.rf <- rf.fit %>%
+  pdp::partial(pred.var = "resting_ecg",
+               grid.resolution = 100,
+               prob = TRUE,
+               ice = TRUE) %>%
+  autoplot(train = train_df, alpha = .1,
+           center = TRUE)
+
+ice11.rf <- rf.fit %>%
+  pdp::partial(pred.var = "resting_bp",
+               grid.resolution = 100,
+               prob = TRUE,
+               ice = TRUE) %>%
+  autoplot(train = train_df, alpha = .1,
+           center = TRUE)
+
+grid.arrange(ice1.rf, ice2.rf, ice3.rf, ice4.rf, ice5.rf, ice6.rf, ice7.rf, ice8.rf, ice9.rf, ice10.rf, ice11.rf,ncol = 3, nrow = 4)
+```
+
+

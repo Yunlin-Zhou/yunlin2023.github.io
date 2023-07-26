@@ -1,0 +1,91 @@
+---
+title: "Advanced statistics courses"
+output:
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+    theme: paper
+---
+
+<br>
+
+# Analysis of Longitudinal Data
+
+*This course is being offered in the Fall of 2022 through the Biostatistics Department at the Columbia School of Public Health; the syllabus is available [here](./advanced statistics courses/_P8157_syllabus.pdf).*
+
+<br>
+
+## Course description
+
+<font size="3">
+
+Say that a vector of measurements of a certain variable of interest indexed by time is available for a set of units. Examples include
+
+* Blood pressure measurements in every trimester in pregnant women;
+
+* Measurement of CD4 T-cell counts in men;
+
+* Measurements of pollen count from March to June on randomly selected day across 20 urban centers;
+
+The above examples from clinical, epidemiological, and environmental health sciences are candidates for Longitudinal Data Analysis. Longitudinal Data Analysis deals with the analysis of repeated measurements over time of a certain variable (blood pressure, CD4-T cell count, Pollen count) across a set of units  (pregnant women, men, urban centers). As in linear regression models and generalized linear models. Often the question of interest is to understand the association between certain covariates of interest and outcome. A  distinguishing feature in the analysis of Longitudinal data is the need to account for correlation between the outcomes from the same entity. The inference based on standard regression models is invalid for longitudinal  data. In this course we will explore various methods to analyze longitudinal data with a special emphasis on applications to problems in public health and the biological sciences. The methods are easily portable to other 
+areas of study with a similar data structure.
+
+<br>
+
+## Learning objectives
+
+Students who successfully complete this course will:
+
+* Identify problems where the analysis of the data using Longitudinal data Analysis methods is viable and most appropriate;
+
+* Perform various exploratory data analysis and produce plots to understand and identify the key characteristics of a given longitudinal data;
+
+* Recognize the limitations of some classical methods to longitudinal data analysis;
+
+* Differentiate between marginal, random-effects, and transition models;
+
+* Analyze both Gaussian and non-Gaussian data;
+
+* Analyze longitudinal data with missing values;
+
+* Analyze longitudinal data with time dependent covariates;
+
+* Explore, identify, and specify models for the given data and perform model diagnostics using statistical software.
+
+</font>
+
+<br>
+
+# Statistical Methods for Causal Inference
+
+*This course is being offered in the Fall of 2022 through the Biostatistics Department at the Columbia School of Public Health; the syllabus is available [here](./advanced statistics courses/Causal Inference - 2022_toupload_lv.pdf).*
+
+<br>
+
+## Course description
+
+<font size="3">
+
+introduce students to different theoretical frameworks for causal inference and statistical methods important to the practice of causal inference. As theoretical frameworks, we will discuss potential outcomes, causal graphs, randomization and model-based inference, and causal mediation. We will cover various methodological tools including randomized experiments, matching, and inverse probability weighting, dynamic causal models, and statistical methods for mediation. We will analyze the strengths and weaknesses of these methods. The course will draw upon examples from social sciences, public health, and other disciplines. The instructor will illustrate application of the approaches using R software.
+
+<br>
+
+## Learning objectives
+
+Students who successfully complete this course will:
+
+* Formalize scientific questions about etiology, intervention, and mechanism using the potential outcomes framework;
+
+* Elicit and evaluate assumptions needed to identify average causal effects in randomized and observational studies;
+
+* Articulate assumptions, relative strengths and weaknesses of matching and weighting estimation approaches;
+
+* Evaluate when appropriate and implement matching and weighting approaches;
+
+* Interpret results of causal analyses for the investigation of fixed time and time-varying exposure effects;
+
+* Elicit and evaluate assumptions necessary to identify mediating mechanisms;
+
+* Implement and interpret results of statistical methods for mediation.
+
+</font>

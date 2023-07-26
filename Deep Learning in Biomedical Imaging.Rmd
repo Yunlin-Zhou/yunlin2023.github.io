@@ -1,0 +1,36 @@
+---
+title: "Deep Learning in Biomedical Imaging"
+output:
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+    theme: paper
+---
+
+<br>
+
+# Deep Learning in Biomedical Imaging
+
+*This course is being offered in the Spring of 2023 through the Biomedical Engineering Department.*
+
+<br>
+
+## Course description
+
+<font size="3">
+
+Introduction to methods in deep learning, with focus on applications to quantitative problems in biomedical imaging and Artificial Intelligence (AI) in medicine. Network models: Deep feedforward networks, convolutional neural networks and recurrent neural networks. Deep autoencoders for denoising. Segmentation and classification of biological tissues and biomarkers of disease. Theory and methods lectures will be accompanied with examples from biomedical image including analysis of neurological images of the brain (MRI), CT images of the lung for cancer and COPD, cardiac ultrasound. Programming assignments will use tensorflow / Pytorch and Jupyter Notebook. Examinations and a final project will also be required.
+
+<br>
+
+## My project 
+
+### Deep Learning for Automatic Segmentation of Human Inner Ear
+
+*The project code and report could be found [here](https://github.com/Yunlin-Zhou/Biomedical-Imaging-Project).*
+
+This thesis aims to develop a deep learning approach for automatic segmentation of the human inner ear in micro-CT scan images, with the ultimate goal of optimizing microneedle design and drug delivery strategy for intracochlear access. Specifically, we implemented a U-Net neural network model and trained it using three datasets. We discussed potential improvements, such as using cross-validation, sliding window algorithm, and alternative loss functions and activation functions for non-binary mask data. Our study demonstrates the promise of deep learning in medical image segmentation and its potential for improving treatment options for inner ear diseases.
+
+<br>
+
+</font>

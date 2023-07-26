@@ -1,0 +1,120 @@
+---
+title: "Other coding courses"
+output:
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+    theme: paper
+---
+
+<br>
+
+# Relational Databases and SQL Programming for Research and Data Science
+
+*This course is being offered in the Spring of 2022 through the Biostatistics Department at the Columbia School of Public Health; the syllabus is available [here](./other coding courses/P8180 Syllabus Spring 2022 Section 1.pdf).*
+
+<br>
+
+## Course description
+
+<font size="3">
+
+In this course, you will learn to design and build relational databases in Access and MySQL, to write and optimize queries using the SQL programming language, and to pull data from the Web using APIs. Application of skills learned in this course will be geared toward research and data science settings in the healthcare field; however, these skills are transferrable to many industries and application areas.
+
+You will begin the course examining the pitfalls of using Excel spreadsheets as a data storage tool and then learn how to build properly-designed relational databases to eliminate the issues related to spreadsheets and maintain data integrity when storing and modifying data. You will then learn two aspects of the SQL programming language: 1) the data manipulation language (DML), which allows you to retrieve data from and populate data into database tables (e.g., SELECT, INSERT INTO, DELETE, UPDATE, etc.), and 2) the data definition language (DDL), which allows you to create and modify tables in a database (e.g., CREATE, ALTER, DROP, etc.). You will additionally learn how to optimize SQL queries for best performance, and use advanced SQL functions. Finally, you will learn how to pull data from the web via APIs.
+
+<br>
+
+## Learning objectives
+
+Students who successfully complete this course will:
+
+* Describe the limitations of using Excel spreadsheets for data storage;
+
+* Design and build fully-functioning, normalized, relational databases using Microsoft Access and MySQL;
+
+* Formulate SQL queries to 1) create and modify database tables, and 2) populate and retrieve data from database tables using Microsoft Access, MySQL, R, and SAS;
+
+* Optimize SQL queries for best performance;
+
+* Extract data from websites via APIs.
+
+<br>
+
+## My project 
+
+Trained with Access and MySQL to process database with immune disease data analysis project.
+
+<br>
+
+### Data analysis on Lupus erythematosus
+
+Lupus erythematosus is known to be a chronic autoimmune disease which might lead to severe inflammatory and attack healthy tissues and organs. However, the causes and symptoms of the disease are not clearly known till now and are supposed to be affected by gene or environmental factors. Recently, AstraZeneca's Saphnelo (anifrolumab-fnia) was finally approved by FDA in 2021 to be treated with SLE disease. Our project aims to build a database to record all related information for future case control study to help find potential symptoms identification and compare between various treatments and drugs with the latest approved first-in-class drug considering their health performance and life expectation according to their clinical visit. Meanwhile, the records for the treatments can also provide evidence for the difference between continuing the same therapies and treatment changes.
+
+</font>
+
+<br>
+
+# Statistical Computing with SAS
+
+*This course is being offered in the Fall of 2022 through the Biostatistics Department at the Columbia School of Public Health; the syllabus is available [here](./other coding courses/P6110 Syllabus Fall 2022.pdf).*
+
+<br>
+
+## Course description
+
+<font size="3">
+
+In this course, you will learn the fundamentals of statistical programming with SAS software. You will begin the course learning the basics of handling datasets in SAS, and then will proceed to learn techniques to manipulate, summarize, and visualize data, and finally perform statistical analyses using appropriate procedures. You will additionally learn how to utilize the SAS macro language to streamline your code, and how to utilize PROC SQL as an alternative to data steps for data manipulation.
+
+<br>
+
+## Learning objectives
+
+Students who successfully complete this course will:
+
+* Manipulate data in SAS using data steps and PROC SQL;
+
+* Summarize and visualize data using appropriate procedures;
+
+* Use SAS macro language to streamline programs;
+
+* Choose and perform appropriate statistical analyses for a given dataset and research question, and interpret the results.
+
+<br>
+
+## My project 
+
+The goal of this final project will be to use SAS to clean and analyze a dataset (which contains information on patients receiving weight loss treatments over multiple visits).
+
+The primary question the researcher would like addressed is: what factors are associated with overall change in weight from initial visit to the final visit? Specifically, you should perform analyses to address:
+
+1.Using Linear Regression to analyze which variables are significant predictors of overall change in BMI.
+
+2.Using Logistic Regression to analyze which variables are significant predictors of having lost more than 5% of initial body weight at the final visit. 
+
+### Report
+
+The original code could be found [here](./other coding courses/yz4184_code.sas) and the report could be found [here](./other coding courses/yz4184_report.docx).
+
+1.Overview: a summary of the research questions being addressed (as stated above).
+
+2.Data Cleaning Notes: summarize any corrections or substantial changes you made to the data. 
+
+3.Descriptive Statistics: Summarize the characteristics of the patients included in the analysis with a table showing Mean (SD) (for continuous variables) or Frequency (%) (for categorical variable) for the following variables: 
+
+* BMI at initial visit 
+
+* Metformin use at initial visit (Yes vs. No; no need to report other weight loss medications) 
+
+4.Analysis: Display relevant output from final models (parameter estimates, 95% confidence intervals, p-values, and any goodness of fit statistics you may choose to report) and interpret the output and parameter estimates. 
+
+
+5.Figures: Include the following graphs
+
+* One clearly displaying the trend of BMI from initial visit to final visit.
+
+* One showing the frequency of the top 5 more common comorbidities in order of most common to least common.
+
+
+</font>

@@ -1,0 +1,83 @@
+---
+title: "Biostatistical methods courses"
+output:
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+    theme: paper
+---
+
+<br>
+
+# Biostatistical Methods 1
+
+*This course is being offered in the Fall of 2021 through the Biostatistics Department at the Columbia School of Public Health; the syllabus is available [here](./biostatistics methods/P8130_Syllabus_Fall21).*
+
+<br>
+
+## Course description
+
+<font size="3">
+
+This one-semester course introduces basic applied descriptive and inferential statistics. The first part of the course includes elementary probability theory, an introduction to statistical distributions, principles of estimation and hypothesis testing, methods for comparison of discrete and continuous data including chi-squared test of independence, t-test, analysis of variance (ANOVA), and their non-parametric equivalents. The second part of the course focuses on linear models (regression) theory and their practical implementation. Applications and data analysis will be implemented using the free statistical software R/RStudio (latest versions).
+
+## Learning objectives
+
+Students who successfully complete this course will:
+
+* Be able to distinguish among different types of data and correctly apply statistical methods of analysis including summary, descriptive statistics;
+
+* Know how to utilize probability distributions and their properties;
+
+* Be able to formulate and assess statistical hypotheses;
+
+* Have a good understanding of linear regression models: theory and applications;
+
+* Be able to apply various regression techniques to real world data problems;
+
+* Be able to use R/R Studio for data management, analysis and results interpretation.
+
+<br>
+
+## My project 
+
+In this project, we evaluated how population characteristics are related to the crime rate across US counties and what are the possible predictors that contribute to the crime rate. To reach our goal, we performed data preprocessing and selected several candidate models for crime rate predicting. Our final model includes potential predictors including total population, youth concentration, percent of Bachelor’s degrees and high school graduates, poverty and unemployment rate, per capita income, population density, region, hospital beds ratio, and interaction term of population and percent of Bachelor’s degrees.
+
+The original code could be found [here](./biostatistics methods/p8130_final_project_group8.Rmd).
+
+Also, you can find our report [here](./biostatistics methods/p8130_fp_report_group_8.pdf).
+
+</font>
+
+<br>
+
+# Biostatistical Methods 2
+
+*This course is being offered in the Spring of 2022 through the Biostatistics Department at the Columbia School of Public Health; the syllabus is available [here](./biostatistics methods/BiostatMethods2_Syllabus.pdf).*
+
+<br>
+
+## Course description
+
+<font size="3">
+
+Regression analysis is widely used in biomedical research. Non-continuous (e.g., binary or countvalued) responses, correlated observations, and censored data are frequently encountered in regression analysis. This course will introduce advanced statistical methods to address these practical problems. Topics include generalized linear models (GLM) for non-Gaussian response, mixed effects models and generalized estimating equations (GEE) for correlated observations, and Cox proportional hazards models for survival data analysis. Examples are drawn from real applications.
+
+<br>
+
+## Learning objectives
+
+Students who successfully complete this course will:
+
+* Use GLM to analyze non-Gaussian response data;
+
+* Use GEE and mixed models to analyze repeated measures;
+
+* Understand the Kaplan-Meier estimator and use Cox models to analyze survival data;
+* Use statistical software (e.g., R) to estimate model parameters, test hypotheses, and conduct model diagnostics;
+
+* Summarize data analysis result and report findings.
+
+
+
+</font>

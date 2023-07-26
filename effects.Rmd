@@ -1,0 +1,28 @@
+---
+title: "Effects of Chilling on the Structure, Function and Development of Chloroplasts"
+output:
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+    theme: paper
+---
+
+*The original article could be found [here](https://www.frontiersin.org/articles/10.3389/fpls.2018.01715/full).*
+
+<br>
+
+## Abstract
+
+<font size="3">
+
+Chloroplasts are the organelles that perform energy transformation in plants. The normal physiological functions of chloroplasts are essential for plant growth and development. Chilling is a common environmental stress in nature that can directly affect the physiological functions of chloroplasts. First, chilling can change the lipid membrane state and enzyme activities in chloroplasts. Then, the efficiency of photosynthesis declines, and excess reactive oxygen species (ROS) are produced. On one hand, excess ROS can damage the chloroplast lipid membrane; on the other hand, ROS also represent a stress signal that can alter gene expression in both the chloroplast and nucleus to help regenerate damaged proteins, regulate lipid homeostasis, and promote plant adaptation to low temperatures. Furthermore, plants assume abnormal morphology, including chlorosis and growth retardation, with some even exhibiting severe necrosis under chilling stress. Here, we review the response of chloroplasts to low temperatures and focus on photosynthesis, redox regulation, lipid homeostasis, and chloroplast development to elucidate the processes involved in plant responses and adaptation to chilling stress.
+
+<br>
+
+## Figure
+
+Graphical representation of the effects of chilling on chloroplasts and corresponding responses. Chloroplasts are among the first organelles to sense low temperature, and low temperatures cause an array of changes to chloroplasts. Low temperatures change the membrane state and enzyme activities in chloroplasts, reducing the efficiency of photosynthesis (photoinhibition in PSI and PSII and affecting the Calvin cycle) and leading to the excess production of ROS. On one hand, ROS cause oxidative damage to molecules, including proteins, nucleic acids and lipids. On the other hand, the accumulation of ROS acts as a signal that activates acclimation mechanisms and regulates gene expression in the nucleus and chloroplasts. The activities of two rate-limiting enzymes involved in the Calvin cycle, fructose-1,6-bisphosphatase (FBPase) and sedoheptulose-1,7-bisphosphatase (SBPase), decrease under low temperature. As chilling time increases, the numbers and sizes of the starch grains decrease. In chilling-sensitive plants with lower levels of unsaturated FAs and reduced ROS-scavenging ability, the thylakoid morphology is abnormal, and the membrane structure is disrupted by excess ROS, which is accompanied by significantly higher galactolipase activity; In addition, the morphology of chloroplasts is altered, and the chlorophyll content decreases, which leads to the dysfunction and degradation of chloroplasts. In chilling-tolerant plants, the ROS-scavenging system is activated to protect the membrane against oxidative damage and initiate cold acclimation. Several nuclear genes, such as PPR, RNPs, and TCD5, involved in RNA processing in chloroplasts are regulated at the transcriptional level or the posttranscriptional level, and accompany with lower galactolipase activity. Altogether, these changes help plants better adapt to lower temperatures with or without chlorophyll content change in recovery stage. “Structure” indicates the structure of the chloroplast membrane; “Development” indicates chloroplast development; “Photosynthesis” indicates the photosynthesis system; and “Redox State” indicates the redox state in chloroplasts.
+
+<center><img src="./effect/fig1.PNG" style="width:70%"></center>
+
+</font>

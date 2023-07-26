@@ -1,0 +1,96 @@
+---
+title: "R coding courses"
+output:
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+    theme: paper
+---
+
+<br>
+
+# Data Science 1
+
+*This course is being offered in the Fall of 2021 through the Biostatistics Department at the Columbia School of Public Health; the syllabus is available [here](./R coding courses/P8105_Syllabus.pdf).*
+
+<br>
+
+## Course description
+
+<font size="3">
+
+Contemporary biostatistics and data analysis depends on the mastery of tools for computation, visualization, dissemination, and reproducibility in addition to proficiency in traditional statistical techniques. The goal of this course is to provide training in the elements of a complete pipeline for data analysis. It is targeted to MS, MPH, and PhD students with some data analysis experience.
+
+<br>
+
+## Learning objectives
+
+Students who successfully complete this course will:
+
+* Utilize best practices for project organization;
+
+* Implement analyses in a reproducible way;
+
+* Use GitHub to publish and disseminate analyses;
+
+* Integrate the principles of data organization into their analyses;
+
+* Easily produce static and interactive graphics;
+
+* Collect data from online sources using web-scraping.
+
+<br>
+
+## My project 
+
+### Explain World Happiness project
+
+*The project website could be found [here](https://yirugong.github.io/world_happiness_report.github.io/index.html).*
+
+Collaborated with a team of 3 to conduct analysis of World Happiness data set, created data visualization using plotly and Rshiny and built a website using R.
+
+</font>
+
+<br>
+
+# Data Science 2
+
+*This course is being offered in the Spring of 2022 through the Biostatistics Department at the Columbia School of Public Health; the syllabus is available [here](./R coding courses/DATA SCIENCE II syllabus 2022.pdf).*
+
+<br>
+
+## Course description
+
+<font size="3">
+
+With the explosion of "Big Data" problems, statistical learning has become a hot field in many scientific areas. The goal of this course is to provide training in practical statistical learning. It is targeted to Biostatistics MS students with data analysis experience in R.
+
+<br>
+
+## Learning objectives
+
+Students who successfully complete this course will:
+
+* Explain concepts and methods in statistical learning;
+
+* Apply classification and regression techniques beyond linear methods;
+
+* Conduct exploratory data analysis using methods in unsupervised learning;
+
+* Implement various statistical learning methods using R;
+
+* Build a pipeline for predictive modeling: data preprocessing, model training, model interpretation.
+
+<br>
+
+## My project 
+
+The project researches how to predict Cardiovascular disease through various body function indexes. By analyzing the distribution of attribute information and building the model, the research aims at predicting the effect of each risk factor on the probability of having heart disease.
+
+We conducted analysis of CVD data set, used logistic, GAM, MARS, LDA and QDA models.
+
+The original code could be found [here](./R coding courses/P8106_final_project_group10-1.Rmd).
+
+Also, you can find our report [here](./R coding courses/P8106_final_report-1.pdf).
+
+</font>
